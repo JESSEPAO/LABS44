@@ -1,0 +1,161 @@
+------------------------------------------
+title: "LABS_44"
+author: "JESSICA PAOLA AGUILAR SERVIN"
+date: "2023-03-08"
+output: html_document
+--------------------------------------------
+
+INSTALAR PROGRAMAS
+install.packages("viridis")
+```{r}
+library(viridis)
+```
+
+
+CARACTERISTICAS DE LOS AUTOS
+GENERAR DATOS PARA TRABAJAR
+
+```{r}
+?mtcars
+mtcars
+class(mtcars)
+```
+
+FORMAR MATRIZ
+```{r}
+mtcars_matrix <- data.matrix(mtcars)
+head(mtcars)
+```
+
+VISUALIZAR 
+
+```{r}
+heatmap(mtcars_matrix)
+```
+
+DESCRIPCION Y DATOS DE HEATMAPS
+
+```{r}
+?heatmap
+```
+
+
+ESCALADO DE LAS COLUMNAS Y NO EN LOS RENGLONES
+La escala es importante: los valores deben centrarse y escalarse en filas o columnas.En nuestro caso, queremos visualizar altibajos en cada variable, que estAn en columnas.
+```{r}
+heatmap(mtcars_matrix, scale = "column")
+```
+
+CREAR NUESTRA PALETA DE COLORES
+```{r}
+colores_blue <- colorRampPalette(c("lightblue","cornflowerblue", "navyblue")) (256)
+```
+
+Con AMBOS denogramas por default, se ordenan las variables por cluster de pertenencia
+```{r}
+heatmap(mtcars_matrix, 
+        scale = "column", 
+        col= colores_blue)
+```
+
+
+Eliminar dendrogramas horizontal de las caracteristicas de los coches
+Nos interesan los tipos de coches por que no tenemos datos normalizados
+```{r}
+
+heatmap(mtcars_matrix, 
+        scale = "column", 
+        col= colores_blue,
+        colv= NA,
+        margins = c(5,10),
+        xlab = "ESPECIFICACIÓN DE CARACTERÍSTICAS",
+        ylab = "MODELOS DE AUTOS",
+        main= "MAPA DE CALOR")
+```
+
+
+OTROS COLORES
+LLAMAR VIRIDIS
+```{r}
+library(viridis)
+```
+
+paletas por defecto
+rainbow, heat.colors, terrain.colors, topo.colors, cm.colors
+
+```{r}
+
+viridis_pal()
+heatmap(mtcars_matrix, 
+        scale = "column", 
+        col= viridis_pal(option = "viridis") (6),
+        colv= NA,
+        margins = c(5,10),
+        xlab = "ESPECIFICACIÓN DE CARACTERÍSTICAS",
+        ylab = "MODELOS DE AUTOS",
+        main= "MAPA DE CALOR")
+```
+
+
+COLOR RAINBOW
+```{r}
+heatmap(mtcars_matrix, 
+        scale = "column", 
+        col= rainbow (6),
+        colv= NA,
+        margins = c(5,10),
+        xlab = "ESPECIFICACIÓN DE CARACTERÍSTICAS",
+        ylab = "MODELOS DE AUTOS",
+        main= "MAPA DE CALOR")
+```
+
+CONTINUAR LA PRACTICA ESTANDARIZANDO DATOS
+
+```{r}
+datos <- mtcars
+```
+
+Para que las variables sean comparables bajo un mismo esquema de colores seestandarizan.
+ESTANDARIZACION DATOS COLORES UNO
+
+```{r}
+datos <- scale(datos)
+heatmap(x = datos, scale = "none",
+        distfun = function(x){dist(x, method = "euclidean")},
+        hclustfun = function(x){hclust(x, method = "average")},
+        cexRow = 0.7)
+
+colores1 <- colorRampPalette(c("red", "white", "blue"))(256)
+```
+
+ESTANDARIZACION DE DATOS COLOR 2
+
+```{r}
+heatmap(x = datos, scale = "none", col = colores_blue, cexRow = 0.7)
+
+colores_blue <- colorRampPalette(c("lightblue", "cornflowerblue", "navyblue"))(256)
+```
+
+Paleta de color viridis
+LLAMAR LIBRERIA
+
+```{r}
+library(viridis)
+colores2 <- viridis(256)
+heatmap(x = datos, scale = "none", col = colores2,
+        distfun = function(x){dist(x, method = "euclidean")},
+        hclustfun = function(x){hclust(x, method = "average")},
+        cexRow = 0.7)
+```
+
+
+Es posible aÑadir informaciOn adicional (annotate) en las filas o columnas con los argumentos RowSideColors y ColSideColors. Por ejemplo, supOngase que los primeros 16 coches proceden de China y los 16 ?ltimos de AmErica. Se codifica con color naranja a los coches procedentes de China y con morado a los de AmErica
+
+```{r}
+colores2 <- viridis(256)
+heatmap(x = datos, scale = "none", col = colores2,
+        distfun = function(x){dist(x, method = "euclidean")},
+        hclustfun = function(x){hclust(x, method = "average")},
+        RowSideColors = rep(c("orange", "purple"), each = 16))
+```
+
